@@ -3,7 +3,7 @@
 import argparse
 import logging
 
-import rir_fetcher, cidr_store, firewall, countries
+from . import rir_fetcher, cidr_store, firewall, countries
 
 from typing import List
 

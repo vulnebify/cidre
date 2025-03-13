@@ -72,12 +72,11 @@ pip install cidre-cli
 ### **2️⃣ Alternative: Clone the Repository**
 
 ```bash
-git clone https://github.com/vulnebify/cidre-cli.git
-cd cidre-cli
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-chmod +x cidre-cli.py
+git clone https://github.com/vulnebify/cidre.git
+cd cidre
+python3 -m venv .venv
+source .venv/bin/activate
+pip install .
 ```
 
 ---
