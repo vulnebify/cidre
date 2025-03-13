@@ -1,5 +1,3 @@
-# 📡 CIDRe - CIDR Enhanced
-
 **CIDRe** is a CLI tool that fetches **daily updated IP allocations** from **Regional Internet Registries (RIRs)**, compiles them into country-based CIDR files, and allows easy **firewall management** (e.g., blocking entire countries in UFW).
 
 🔹 **Supports AFRINIC, APNIC, ARIN, LACNIC, RIPE NCC**  
