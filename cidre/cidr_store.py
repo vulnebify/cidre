@@ -12,6 +12,10 @@ class FsCidrStore:
         self.__base_path = Path(base_folder)
 
     def save(self, cidrs: Dict[str, Dict[str, Set]]):
+        self.__logger.info(
+            f"Saving CIDRs into {self.__base_path}/* path.",
+            extra={"base_path": {self.__base_path}},
+        )
         for cc, networks in sorted(cidrs.items()):
             for ip_version in ["ipv4", "ipv6"]:
                 directory = self.__base_path / ip_version

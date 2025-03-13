@@ -41,7 +41,7 @@ class RirFetcher:
         for registry, url in sources.items():
             try:
                 self.__logger.info(
-                    f"Fetching data from {registry}", extra={"registry": registry}
+                    f"Pulling IP ranges from {registry}.", extra={"registry": registry}
                 )
                 response = requests.get(
                     url,
@@ -52,7 +52,7 @@ class RirFetcher:
                 data[registry] = response.text.splitlines()
             except requests.RequestException as e:
                 self.__logger.exception(
-                    f"Error fetching {registry} data", extra={"registry": registry}
+                    f"Error pulling {registry} data.", extra={"registry": registry}
                 )
 
         return data
@@ -60,6 +60,9 @@ class RirFetcher:
     def __convert_to_cidrs(
         self, data: Dict[str, List[str]]
     ) -> Dict[str, Dict[str, Set]]:
+
+        self.__logger.info("Compliling pulled IP ranges into CIDRs.")
+
         country_cidrs = collections.defaultdict(lambda: {"ipv4": set(), "ipv6": set()})
 
         for _, lines in data.items():
@@ -95,6 +98,8 @@ class RirFetcher:
     def __merge_cidrs(
         self, cidrs: Dict[str, Dict[str, Set]]
     ) -> Dict[str, Dict[str, Set]]:
+        self.__logger.info("Merging compiled CIDRs.")
+
         merged_cidrs = {}
 
         for cc, networks in cidrs.items():

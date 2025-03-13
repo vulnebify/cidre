@@ -14,7 +14,7 @@ class UfwFirewall:
     def apply(self, action: str, country_codes: List[str]):
         if not shutil.which("ufw"):
             self.__logger.error("Error: UFW is not installed on this system.")
-            self.__logger.error("You can install it with: sudo apt install ufw")
+            self.__logger.error("You can install it with: `sudo apt install ufw`")
             return
 
         for country_code in country_codes:
@@ -31,6 +31,7 @@ class UfwFirewall:
                 self.__logger.error(
                     f"Error: CIDR file not found for {country_code.upper()} in {ip_version}."
                 )
+                self.__logger.error("You can pull it with: `cidre pull --merge`")
                 return
 
             with open(cidr_file, "r") as f:
@@ -38,7 +39,7 @@ class UfwFirewall:
 
             if not cidr_blocks:
                 self.__logger.error(
-                    f"No CIDR blocks found for {country_code.upper()} in {ip_version}."
+                    f"Error: No CIDR blocks found for {country_code.upper()} in {ip_version}."
                 )
                 return
 

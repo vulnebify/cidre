@@ -46,14 +46,6 @@ def main():
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument(
-        "-v",
-        "--verbose",
-        action="count",
-        default=0,
-        help="The verbosity level (-v, -vv, -vvv)",
-    )
-
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     pull_parser = subparsers.add_parser("pull", help="Pulls the CIDRs from RIRs")
@@ -109,13 +101,7 @@ def main():
 
     args = parser.parse_args()
 
-    verbosity_levels = [logging.WARNING, logging.INFO, logging.DEBUG]
-    logging_level = verbosity_levels[min(args.verbose, len(verbosity_levels) - 1)]
-
-    logging.basicConfig(
-        level=logging_level,
-        format="%(asctime)s %(levelname)s %(message)s",
-    )
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
 
     if args.command == "pull":
         print(
@@ -123,6 +109,7 @@ def main():
             end="\n\n",
         )
         pull(args.merge, args.proxy, args.store)
+        print("")
         print("Pulling complete ✅")
     elif args.command in ["allow", "deny", "reject"]:
         print(
@@ -130,6 +117,7 @@ def main():
             end="\n\n",
         )
         apply(args.command, args.countries, args.store)
+        print("")
         print("Applying complete ✅")
 
     print("")
