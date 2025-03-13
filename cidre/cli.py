@@ -3,7 +3,7 @@
 import argparse
 import logging
 
-from cidre import rir_fetcher, cidr_store, firewall, countries
+import rir_fetcher, cidr_store, firewall, countries
 
 from typing import List
 
@@ -66,8 +66,8 @@ def main():
         "-s",
         "--store",
         type=str,
-        default="./output/cidr",
-        help="The path to store CIDRs. Default: './output/cidr'.",
+        default="../output/cidr",
+        help="The path to store CIDRs. Default: '../output/cidr'.",
     )
 
     for action in ["allow", "deny", "reject"]:
@@ -95,8 +95,8 @@ def main():
             "-s",
             "--store",
             type=str,
-            default="./output/cidr",
-            help="The path to store CIDRs. Default: './output/cidr'.",
+            default="../output/cidr",
+            help="The path to store CIDRs. Default: '../output/cidr'.",
         )
 
     args = parser.parse_args()
