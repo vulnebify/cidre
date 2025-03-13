@@ -1,0 +1,47 @@
+name: Compile CIDRs
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Runs daily at midnight UTC
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  update_cidr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false  # Needed for GitHub Actions to push changes
+
+      - name: Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'  # Use your preferred Python version
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run CIDR pull script
+        env:
+          PROXY: ${{ secrets.PROXY }}
+        run: |
+          chmod +x cidre.py
+          ./cidre.py pull --merge --proxy "$PROXY"
+
+      - name: Check for Changes
+        run: |
+          git diff --quiet || echo "CHANGES_DETECTED=true" >> $GITHUB_ENV
+
+      - name: Commit and Push Changes
+        if: env.CHANGES_DETECTED == 'true'
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add .
+          git commit -m "Auto-update CIDR data [$(date)]"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
