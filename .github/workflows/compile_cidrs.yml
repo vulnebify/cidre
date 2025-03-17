@@ -6,7 +6,7 @@ on:
   workflow_dispatch:  # Allows manual trigger
 
 jobs:
-  update_cidr:
+  compile_cidrs:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,8 +28,8 @@ jobs:
         env:
           PROXY: ${{ secrets.PROXY }}
         run: |
-          chmod +x cidre.py
-          ./cidre.py pull --merge --proxy "$PROXY"
+          pip install .
+          cidre pull --merge --proxy "$PROXY"
 
       - name: Check for Changes
         run: |
