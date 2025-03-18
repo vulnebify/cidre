@@ -1,3 +1,5 @@
+![demo](https://github.com/user-attachments/assets/ada4e504-90a3-442b-aa05-98a1e0b1da7e)
+
 **CIDRe** is a CLI tool that fetches **daily updated IP allocations** from **Regional Internet Registries (RIRs)**, compiles them into country-based CIDR files, and allows easy **firewall management**.
 
 🔹 **Supports AFRINIC, APNIC, ARIN, LACNIC, RIPE NCC**    
