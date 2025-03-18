@@ -121,7 +121,7 @@ def main():
             type=Firewall,
             choices=[Firewall.UFW, Firewall.IPTABLES],
             default=Firewall.UFW,
-            help="The firewall for adding rules.",
+            help="The firewall for adding rules. Default: 'ufw'.",
         )
 
         action_parser.add_argument(

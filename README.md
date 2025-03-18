@@ -1,4 +1,4 @@
-**CIDRe** is a CLI tool that fetches **daily updated IP allocations** from **Regional Internet Registries (RIRs)**, compiles them into country-based CIDR files, and allows easy **firewall management** (e.g., blocking entire countries in UFW).
+**CIDRe** is a CLI tool that fetches **daily updated IP allocations** from **Regional Internet Registries (RIRs)**, compiles them into country-based CIDR files, and allows easy **firewall management**.
 
 🔹 **Supports AFRINIC, APNIC, ARIN, LACNIC, RIPE NCC**  
 🔹 **Merges and optimizes CIDR blocks** for efficiency  
@@ -7,7 +7,7 @@
 
 ---
 
-## ⚡ Quick Start
+## ⚡ Quick start
 
 ### **1️⃣ Install CIDRE**
 
@@ -15,7 +15,7 @@
 pip install cidre-cli
 ```
 
-### **2️⃣ Pull & Merge CIDR Ranges**
+### **2️⃣ Pull & merge CIDR ranges**
 
 ```bash
 cidre pull --merge
@@ -24,30 +24,24 @@ cidre pull --merge
 - Downloads the latest CIDR allocations from RIRs.
 - Merges overlapping IP ranges for efficiency.
 
-### **3️⃣ Block Specific Countries in UFW**
+### **3️⃣ Block specific countries**
 
 ```bash
-cidre deny ru ir kp
+# UFW is better suited for small CIDR inputs
+cidre deny ir kp --firewall ufw
 ```
 
-- Blocks **Russia (RU), Iran (IR), and North Korea (KP)** in UFW.
-- Requires **UFW installed** (`sudo apt install ufw`).
+- Blocks **Iran (IR), and North Korea (KP)** in UFW.
+- Requires **ufw** installed (`sudo apt install ufw`).
 
-### **4️⃣ Allow Specific Countries in UFW**
 
 ```bash
-cidre allow us gb de
+# iptables is better suited for large CIDR inputs
+cidre deny ru ir kp --firewall iptables
 ```
 
-- Allows **United States (US), United Kingdom (GB), and Germany (DE)** IPs in UFW.
-
-### **5️⃣ Reject (Drop) Traffic from Specific Countries**
-
-```bash
-cidre reject cn ru
-```
-
-- Rejects (drops) traffic from **China (CN) and Russia (RU)**.
+- Blocks **Russia (RU), Iran (IR), and North Korea (KP)** in iptables using ipset.
+- Requires **ipset and iptables** installed (`sudo apt install ipset iptables`).
 
 ---
 
@@ -69,7 +63,7 @@ cidre reject cn ru
 pip install cidre-cli
 ```
 
-### **2️⃣ Alternative: Clone the Repository**
+### **2️⃣ Alternative: clone the repository**
 
 ```bash
 git clone https://github.com/vulnebify/cidre.git
@@ -83,7 +77,7 @@ pip install .
 
 ## ⚡ Usage
 
-### **1️⃣ Pull and Compile CIDR Ranges**
+### **1️⃣ Pull and compile CIDR ranges**
 
 Fetches the latest IP allocation data from all RIRs and **compiles per-country CIDR blocks**:
 
@@ -93,37 +87,41 @@ cidre pull --merge
 
 - `--merge`: Merges overlapping IP ranges for efficiency.
 - `--proxy <proxy>`: Proxies connection to RIRs.
-- `--store <path>`: Specifies a custom storage directory.
-- **Output Example:**
-  - `output/cidr/ipv4/us.cidr` (United States IPv4 ranges)
-  - `output/cidr/ipv6/de.cidr` (Germany IPv6 ranges)
+- `--cidr-store <path>`: Specifies CIDRs' custom storage directory. Default `./output/cidr/{ipv4|ipv6}/{country_code}.cidr`.
 
-### **2️⃣ Block Entire Countries with UFW**
+### **2️⃣ Action on countries**
 
-Block specific countries' CIDR blocks in **UFW firewall**:
+Allow|deny|reject specific countries' CIDR blocks in **specified firewall**:
 
 ```bash
-cidre deny ru ir kp
+cidre allow|deny|reject ru ir kp
 ```
 
-- Blocks **Russia (RU), Iran (IR), and North Korea (KP)** in the **Uncomplicated Firewall (UFW)**.
-- Requires **UFW installed** (`sudo apt install ufw` on Debian/Ubuntu).
+- `--firewall ufw|iptables`: Firewall to apply rules. Default `ufw`.
+- `--cidr-store <path>`: Specifies CIDRs' custom storage directory. Default `./output/cidr/{ipv4|ipv6}/{country_code}.cidr`.
 
-### **3️⃣ Allow Specific Countries**
+**⚠️ NOTE: iptables firewall DO NOT persist rules by default**
+
+To ensure iptables and IPSet rules persist after a reboot, follow these steps:
 
 ```bash
-cidre allow us gb de
+# 1️⃣ Save rules based on the firewall method:
+# - For iptables + IPSet:
+sudo ipset save > /etc/ipset.rules
+sudo iptables-save > /etc/iptables/rules.v4
+sudo ip6tables-save > /etc/iptables/rules.v6
+
+# 2️⃣ Restore firewall rules on boot:
+# - For iptables + IPSet:
+sudo bash -c 'echo "ipset restore < /etc/ipset.rules" >> /etc/rc.local'
+sudo chmod +x /etc/rc.local
+
+# 3️⃣ Reboot and verify:
+sudo reboot
+sudo ipset list
+sudo iptables -L -v -n
 ```
 
-- Allows **United States (US), United Kingdom (GB), and Germany (DE)** IPs in UFW.
-
-### **4️⃣ Reject (Drop) Traffic from Specific Countries**
-
-```bash
-cidre reject cn ru
-```
-
-- Rejects (drops) traffic from **China (CN) and Russia (RU)**.
 
 ---
 
@@ -133,7 +131,7 @@ This project is licensed under the **MIT License**.
 
 ---
 
-## 🙌 Inspired By
+## 🙌 Inspired by
 
 CIDRE was inspired by **[herrbischoff/country-ip-blocks](https://github.com/herrbischoff/country-ip-blocks)** and aims to provide an automated alternative with firewall integration.
 
