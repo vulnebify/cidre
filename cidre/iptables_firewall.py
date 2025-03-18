@@ -47,18 +47,30 @@ class IpTablesFirewall:
 
             set_name = f"cidre_{country_code}_blocklist_{ip_version}"
 
-            self.__create_ipset(set_name)
+            self.__create_ipset(set_name, ip_version)
             self.__add_to_ipset(set_name, cidr_blocks)
             self.__apply_iptables(set_name, action)
 
-    def __create_ipset(self, set_name: str):
+    def __create_ipset(self, set_name: str, ip_version: str):
         self.__logger.info(f"🛠 Creating IPSet {set_name} (if not exists)...")
-        subprocess.run(["ipset", "create", set_name, "hash:net", "-exist"], check=True)
+
+        if ip_version == "ipv4":
+            subprocess.run(
+                ["ipset", "create", set_name, "hash:net", "-exist"], check=True
+            )
+        elif ip_version == "ipv6":
+            subprocess.run(
+                ["ipset", "create", set_name, "hash:net", "family", "inet6", "-exist"],
+                check=True,
+            )
 
     def __add_to_ipset(self, set_name: str, cidr_blocks: List[str]):
+        self.__logger.info(f"IPSet ({set_name}): Adding {len(cidr_blocks)} CIDRs...")
+
         for cidr in cidr_blocks:
             subprocess.run(["ipset", "add", set_name, cidr, "-exist"], check=True)
-            self.__logger.info(f"IPSet ({set_name}): Added {cidr}")
+
+            self.__logger.debug(f"IPSet ({set_name}): Added {cidr}")
 
     def __apply_iptables(self, set_name: str, action: str):
         iptables_action = {
