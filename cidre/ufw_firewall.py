@@ -11,14 +11,16 @@ class UfwFirewall:
         self.__base_folder = base_folder
         self.__logger = logging.getLogger(self.__class__.__name__)
 
-    def apply(self, action: str, country_codes: List[str]):
+    def apply(self, action: str, country_codes: List[str]) -> bool:
         if not shutil.which("ufw"):
             self.__logger.error("Error: UFW is not installed on this system.")
             self.__logger.error("You can install it with: `sudo apt install ufw`")
-            return
+            return False
 
         for country_code in country_codes:
             self.__apply_one(action, country_code)
+
+        return True
 
     def __apply_one(self, action: str, country_code: str):
 

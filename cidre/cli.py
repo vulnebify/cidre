@@ -3,9 +3,15 @@
 import argparse
 import logging
 
-from . import rir_fetcher, cidr_store, firewall, countries
+from . import rir_fetcher, cidr_store, countries, ufw_firewall, iptables_firewall
 
 from typing import List
+from enum import Enum
+
+
+class Firewall(str, Enum):
+    UFW = "ufw"
+    IPTABLES = "iptables"
 
 
 def country_code(value: str):
@@ -17,16 +23,41 @@ def country_code(value: str):
     return value
 
 
-def pull(merge: bool, proxy: str | None, store: str):
-    cidrs = rir_fetcher.RirFetcher(merge, proxy).fetch()
+def pull(merge: bool, proxy: str | None, store: str) -> bool:
 
-    cidr_store.FsCidrStore(store).save(cidrs)
+    try:
+        cidrs = rir_fetcher.RirFetcher(merge, proxy).fetch()
+
+        cidr_store.FsCidrStore(store).save(cidrs)
+
+        return True
+    except:
+        logger = logging.getLogger(__name__)
+        logger.exception(
+            "Yikes! Unhandled exception. Shame on us! File ticket: https://github.com/vulnebify/cidre/issues/new"
+        )
+
+        return False
 
 
-def apply(action: str, countries: List[str], store: str):
-    ufw = firewall.UfwFirewall(store)
+def apply(firewall: Firewall, action: str, countries: List[str], store: str) -> bool:
+    try:
+        if firewall == Firewall.UFW:
+            ufw = ufw_firewall.UfwFirewall(store)
 
-    ufw.apply(action, countries)
+            return ufw.apply(action, countries)
+
+        if firewall == Firewall.IPTABLES:
+            iptables = iptables_firewall.IpTablesFirewall(store)
+
+            return iptables.apply(action, countries)
+    except:
+        logger = logging.getLogger(__name__)
+        logger.exception(
+            "Yikes! Unhandled exception. Shame on us! File ticket: https://github.com/vulnebify/cidre/issues/new"
+        )
+
+        return False
 
 
 def main():
@@ -63,8 +94,9 @@ def main():
         help="The proxy to make requests RIRs",
     )
     pull_parser.add_argument(
-        "-s",
-        "--store",
+        "-cs",
+        "--cidr-store",
+        dest="cidr_store",
         type=str,
         default="../output/cidr",
         help="The path to store CIDRs. Default: '../output/cidr'.",
@@ -86,14 +118,16 @@ def main():
         action_parser.add_argument(
             "-f",
             "--firewall",
-            choices=["ufw"],
-            default="ufw",
+            type=Firewall,
+            choices=[Firewall.UFW, Firewall.IPTABLES],
+            default=Firewall.UFW,
             help="The firewall for adding rules.",
         )
 
         action_parser.add_argument(
-            "-s",
-            "--store",
+            "-cs",
+            "--cidr-store",
+            dest="cidr_store",
             type=str,
             default="../output/cidr",
             help="The path to store CIDRs. Default: '../output/cidr'.",
@@ -108,17 +142,25 @@ def main():
             f"💡 Pulling ranges from RIRs to compile CIDRs with {"enabled" if args.merge else "disabled"} merging...",
             end="\n\n",
         )
-        pull(args.merge, args.proxy, args.store)
+        success = pull(args.merge, args.proxy, args.cidr_store)
         print("")
-        print("Pulling complete ✅")
+
+        if success:
+            print("Pulling complete ✅")
+        else:
+            print("Oh no! Pulling failed ❌")
     elif args.command in ["allow", "deny", "reject"]:
         print(
-            f"💡 Applying '{args.command}' action to '{args.firewall}' firewall for {", ".join(args.countries)} countries...",
+            f"💡 Applying '{args.command}' action to '{args.firewall.value}' firewall for {", ".join(args.countries)} countries...",
             end="\n\n",
         )
-        apply(args.command, args.countries, args.store)
+        success = apply(args.firewall, args.command, args.countries, args.cidr_store)
         print("")
-        print("Applying complete ✅")
+
+        if success:
+            print("Applying complete ✅")
+        else:
+            print("Oh no! Applying failed ❌")
 
     print("")
 
