@@ -49,7 +49,7 @@ class IpTablesFirewall:
 
             self.__create_ipset(set_name, ip_version)
             self.__add_to_ipset(set_name, cidr_blocks)
-            self.__apply_iptables(set_name, action)
+            self.__apply_iptables(set_name, action, ip_version)
 
     def __create_ipset(self, set_name: str, ip_version: str):
         self.__logger.info(f"🛠 Creating IPSet {set_name} (if not exists)...")
@@ -64,7 +64,7 @@ class IpTablesFirewall:
                 check=True,
             )
 
-    def __add_to_ipset(self, set_name: str, cidr_blocks: List[str]):
+    def __add_to_ipset(self, set_name: str, cidr_blocks: List[str], ip_version: str):
         self.__logger.info(f"IPSet ({set_name}): Adding {len(cidr_blocks)} CIDRs...")
 
         for cidr in cidr_blocks:
@@ -72,7 +72,7 @@ class IpTablesFirewall:
 
             self.__logger.debug(f"IPSet ({set_name}): Added {cidr}")
 
-    def __apply_iptables(self, set_name: str, action: str):
+    def __apply_iptables(self, set_name: str, action: str, ip_version: str):
         iptables_action = {
             "deny": "DROP",
             "reject": "REJECT",
@@ -84,7 +84,7 @@ class IpTablesFirewall:
         )
         subprocess.run(
             [
-                "iptables",
+                "iptables" if ip_version == "ipv4" else "ip6tables",
                 "-I",
                 "INPUT",
                 "-m",
