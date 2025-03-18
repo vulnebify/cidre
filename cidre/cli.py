@@ -98,8 +98,8 @@ def main():
         "--cidr-store",
         dest="cidr_store",
         type=str,
-        default="../output/cidr",
-        help="The path to store CIDRs. Default: '../output/cidr'.",
+        default="./output/cidr",
+        help="The path to store CIDRs. Default: './output/cidr'.",
     )
 
     for action in ["allow", "deny", "reject"]:
@@ -129,8 +129,8 @@ def main():
             "--cidr-store",
             dest="cidr_store",
             type=str,
-            default="../output/cidr",
-            help="The path to store CIDRs. Default: '../output/cidr'.",
+            default="./output/cidr",
+            help="The path to store CIDRs. Default: './output/cidr'.",
         )
 
     args = parser.parse_args()
