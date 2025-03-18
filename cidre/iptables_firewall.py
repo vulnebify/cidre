@@ -64,7 +64,7 @@ class IpTablesFirewall:
                 check=True,
             )
 
-    def __add_to_ipset(self, set_name: str, cidr_blocks: List[str], ip_version: str):
+    def __add_to_ipset(self, set_name: str, cidr_blocks: List[str]):
         self.__logger.info(f"IPSet ({set_name}): Adding {len(cidr_blocks)} CIDRs...")
 
         for cidr in cidr_blocks:
