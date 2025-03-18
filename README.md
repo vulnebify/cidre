@@ -1,9 +1,10 @@
 **CIDRe** is a CLI tool that fetches **daily updated IP allocations** from **Regional Internet Registries (RIRs)**, compiles them into country-based CIDR files, and allows easy **firewall management**.
 
-🔹 **Supports AFRINIC, APNIC, ARIN, LACNIC, RIPE NCC**  
-🔹 **Merges and optimizes CIDR blocks** for efficiency  
-🔹 **Firewall integration** (UFW support)  
-🔹 **IPv4 & IPv6 compatible**  
+🔹 **Supports AFRINIC, APNIC, ARIN, LACNIC, RIPE NCC**    
+🔹 Daily automatic CIDR updates **[in the repository](https://github.com/vulnebify/cidre/blob/main/output/cidr)**    
+🔹 **Merges and optimizes CIDR blocks** for efficiency     
+🔹 **Firewall integration** (UFW & iptables /w ipset support)   
+🔹 **IPv4 & IPv6 compatible**     
 
 ---
 
@@ -42,16 +43,6 @@ cidre deny ru ir kp --firewall iptables
 
 - Blocks **Russia (RU), Iran (IR), and North Korea (KP)** in iptables using ipset.
 - Requires **ipset and iptables** installed (`sudo apt install ipset iptables`).
-
----
-
-## 🚀 Features
-
-- **Daily automatic CIDR updates**.
-- **Compiles CIDR blocks per country** from RIR allocation data.
-- **Merges overlapping IP ranges** for efficiency.
-- **Allows easy firewall rules** for blocking or allowing entire countries.
-- **Supports both IPv4 & IPv6**.
 
 ---
 
