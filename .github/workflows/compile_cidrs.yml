@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          persist-credentials: false  # Needed for GitHub Actions to push changes
+          persist-credentials: true  # Needed for GitHub Actions to push changes
 
       - name: Set Up Python
         uses: actions/setup-python@v4
