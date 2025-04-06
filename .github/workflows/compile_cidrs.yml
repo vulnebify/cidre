@@ -28,8 +28,7 @@ jobs:
         env:
           PROXY: ${{ secrets.PROXY }}
         run: |
-          pip install .
-          cidre pull --merge --proxy "$PROXY" --cidr-store ../output/cidr
+          python -m cidre.cli pull --merge --proxy "$PROXY" 
 
       - name: Check for Changes
         run: |
