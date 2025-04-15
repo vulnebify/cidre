@@ -1,6 +1,11 @@
-![demo](https://github.com/user-attachments/assets/ada4e504-90a3-442b-aa05-98a1e0b1da7e)
+# CIDRE
 
 **CIDRe** is a CLI tool that fetches **daily updated IP allocations** from **Regional Internet Registries (RIRs)**, compiles them into country-based CIDR files, and allows easy **firewall management**.
+
+[![Compile CIDRs](https://github.com/vulnebify/cidre/actions/workflows/compile_cidrs.yml/badge.svg)](https://github.com/vulnebify/cidre/actions/workflows/compile_cidrs.yml)
+[![Publish Release to PyPI](https://github.com/vulnebify/cidre/actions/workflows/pypi_release.yml/badge.svg)](https://github.com/vulnebify/cidre/actions/workflows/pypi_release.yml)
+
+![demo](https://github.com/user-attachments/assets/ada4e504-90a3-442b-aa05-98a1e0b1da7e)
 
 🔹 **Supports AFRINIC, APNIC, ARIN, LACNIC, RIPE NCC**    
 🔹 Daily automatic CIDR updates **[in the repository](https://github.com/vulnebify/cidre/blob/main/output/cidr)**    
@@ -12,13 +17,13 @@
 
 ## ⚡ Quick start
 
-### **1️⃣ Install CIDRE**
+### **Install CIDRE**
 
 ```bash
 pip install cidre-cli
 ```
 
-### **2️⃣ Pull & merge CIDR ranges**
+### **Pull & merge CIDR ranges**
 
 ```bash
 cidre pull --merge
@@ -27,7 +32,7 @@ cidre pull --merge
 - Downloads the latest CIDR allocations from RIRs.
 - Merges overlapping IP ranges for efficiency.
 
-### **3️⃣ Block specific countries**
+### **Block specific countries**
 
 ```bash
 # UFW is better suited for small CIDR inputs
@@ -50,13 +55,13 @@ cidre deny ru ir kp --firewall iptables
 
 ## 🛠️ Installation
 
-### **1️⃣ Install via PyPI**
+### **Install via PyPI**
 
 ```bash
 pip install cidre-cli
 ```
 
-### **2️⃣ Alternative: clone the repository**
+### **Alternative: clone the repository**
 
 ```bash
 git clone https://github.com/vulnebify/cidre.git
@@ -70,7 +75,7 @@ pip install .
 
 ## ⚡ Usage
 
-### **1️⃣ Pull and compile CIDR ranges**
+### **Pull and compile CIDR ranges**
 
 Fetches the latest IP allocation data from all RIRs and **compiles per-country CIDR blocks**:
 
@@ -82,7 +87,7 @@ cidre pull --merge
 - `--proxy <proxy>`: Proxies connection to RIRs.
 - `--cidr-store <path>`: Specifies CIDRs' custom storage directory. Default `./output/cidr/{ipv4|ipv6}/{country_code}.cidr`.
 
-### **2️⃣ Action on countries**
+### **Action on countries**
 
 Allow|deny|reject specific countries' CIDR blocks in **specified firewall**:
 
@@ -98,18 +103,18 @@ cidre allow|deny|reject ru ir kp
 To ensure iptables and IPSet rules persist after a reboot, follow these steps:
 
 ```bash
-# 1️⃣ Save rules based on the firewall method:
+# Save rules based on the firewall method:
 # - For iptables + IPSet:
 sudo ipset save > /etc/ipset.rules
 sudo iptables-save > /etc/iptables/rules.v4
 sudo ip6tables-save > /etc/iptables/rules.v6
 
-# 2️⃣ Restore firewall rules on boot:
+# Restore firewall rules on boot:
 # - For iptables + IPSet:
 sudo bash -c 'echo "ipset restore < /etc/ipset.rules" >> /etc/rc.local'
 sudo chmod +x /etc/rc.local
 
-# 3️⃣ Reboot and verify:
+# Reboot and verify:
 sudo reboot
 sudo ipset list
 sudo iptables -L -v -n
