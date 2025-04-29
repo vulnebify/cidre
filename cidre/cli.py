@@ -3,9 +3,16 @@
 import argparse
 import logging
 
-from . import rir_fetcher, cidr_store, countries, ufw_firewall, iptables_firewall
+from . import (
+    rir_fetcher,
+    cidr_store,
+    countries,
+    ufw_firewall,
+    iptables_firewall,
+    cidr_counter,
+)
 
-from typing import List
+from typing import List, Dict
 from enum import Enum
 
 
@@ -38,6 +45,20 @@ def pull(merge: bool, proxy: str | None, store: str) -> bool:
         )
 
         return False
+
+
+def count(country_codes: List[str], store: str) -> Dict[str, Dict[str, int]]:
+    try:
+        return cidr_counter.CidrCounter(store).count(
+            country_codes or countries.ISO_3166_1_ALPHA_2_CODES
+        )
+    except:
+        logger = logging.getLogger(__name__)
+        logger.exception(
+            "Yikes! Unhandled exception. Shame on us! File ticket: https://github.com/vulnebify/cidre/issues/new"
+        )
+
+        return {}
 
 
 def apply(firewall: Firewall, action: str, countries: List[str], store: str) -> bool:
@@ -102,6 +123,24 @@ def main():
         help="The path to store CIDRs. Default: './output/cidr'.",
     )
 
+    count_parser = subparsers.add_parser("count", help="Counts amount of IPs")
+
+    count_parser.add_argument(
+        "countries",
+        nargs="*",
+        type=country_code,
+        help="The countries (ISO 3166-1 alpha-2 code).",
+    )
+
+    count_parser.add_argument(
+        "-cs",
+        "--cidr-store",
+        dest="cidr_store",
+        type=str,
+        default="./output/cidr",
+        help="The path to store CIDRs. Default: './output/cidr'.",
+    )
+
     for action in ["allow", "deny", "reject"]:
         action_parser = subparsers.add_parser(
             action,
@@ -138,8 +177,9 @@ def main():
     logging.basicConfig(level=logging.INFO, format="%(message)s")
 
     if args.command == "pull":
+        is_merge_enabled = "enabled" if args.merge else "disabled"
         print(
-            f"💡 Pulling ranges from RIRs to compile CIDRs with {"enabled" if args.merge else "disabled"} merging...",
+            f"💡 Pulling ranges from RIRs to compile CIDRs with {is_merge_enabled} merging...",
             end="\n\n",
         )
         success = pull(args.merge, args.proxy, args.cidr_store)
@@ -149,9 +189,22 @@ def main():
             print("Pulling complete ✅")
         else:
             print("Oh no! Pulling failed ❌")
+    elif args.command == "count":
+        counter = count(args.countries, args.cidr_store)
+        total = 0
+
+        if counter:
+            for country, per_country in counter.items():
+                print(f"{country}: {per_country}")
+                total += per_country
+
+            print(f"Total: {total}")
+        else:
+            print("Oh no! Counting failed ❌")
     elif args.command in ["allow", "deny", "reject"]:
+        joined_countries = ", ".join(args.countries)
         print(
-            f"💡 Applying '{args.command}' action to '{args.firewall.value}' firewall for {", ".join(args.countries)} countries...",
+            f"💡 Applying '{args.command}' action to '{args.firewall.value}' firewall for {joined_countries} countries...",
             end="\n\n",
         )
         success = apply(args.firewall, args.command, args.countries, args.cidr_store)
