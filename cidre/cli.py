@@ -100,7 +100,13 @@ def main():
 
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    pull_parser = subparsers.add_parser("pull", help="Pulls the CIDRs from RIRs")
+    cidre_parser = subparsers.add_parser("cidr", help="Pulls the CIDRs from RIRs")
+    firewall_parser = subparsers.add_parser("firewall", help="Choose from {accept, deny, reject}")
+
+    cidre_subparser = cidre_parser.add_subparsers(dest="cidre_subcommand", required=True)
+    firewall_subparser = firewall_parser.add_subparsers(dest="firewall_subcommand", required=True)
+
+    pull_parser = cidre_subparser.add_parser("pull", help="Pulls the CIDRs from RIRs")
 
     pull_parser.add_argument(
         "-m",
@@ -123,7 +129,7 @@ def main():
         help="The path to store CIDRs. Default: './output/cidr'.",
     )
 
-    count_parser = subparsers.add_parser("count", help="Counts amount of IPs")
+    count_parser = cidre_subparser.add_parser("count", help="Counts amount of IPs")
 
     count_parser.add_argument(
         "countries",
@@ -142,19 +148,19 @@ def main():
     )
 
     for action in ["allow", "deny", "reject"]:
-        action_parser = subparsers.add_parser(
+        firewall_parser = firewall_subparser.add_parser(
             action,
             help=f"Applies '{action}' action to country's CIDRs in firewall.",
         )
 
-        action_parser.add_argument(
+        firewall_parser.add_argument(
             "countries",
             nargs="+",
             type=country_code,
             help="The countries (ISO 3166-1 alpha-2 code).",
         )
 
-        action_parser.add_argument(
+        firewall_parser.add_argument(
             "-f",
             "--firewall",
             type=Firewall,
@@ -163,7 +169,7 @@ def main():
             help="The firewall for adding rules. Default: 'ufw'.",
         )
 
-        action_parser.add_argument(
+        firewall_parser.add_argument(
             "-cs",
             "--cidr-store",
             dest="cidr_store",
@@ -176,46 +182,48 @@ def main():
 
     logging.basicConfig(level=logging.INFO, format="%(message)s")
 
-    if args.command == "pull":
-        is_merge_enabled = "enabled" if args.merge else "disabled"
-        print(
-            f"💡 Pulling ranges from RIRs to compile CIDRs with {is_merge_enabled} merging...",
-            end="\n\n",
-        )
-        success = pull(args.merge, args.proxy, args.cidr_store)
+    if args.command == "cidr":
+        if args.cidre_subcommand == "pull":
+            is_merge_enabled = "enabled" if args.merge else "disabled"
+            print(
+                f"💡 Pulling ranges from RIRs to compile CIDRs with {is_merge_enabled} merging...",
+                end="\n\n",
+            )
+            success = pull(args.merge, args.proxy, args.cidr_store)
+            print("")
+
+            if success:
+                print("Pulling complete ✅")
+            else:
+                print("Oh no! Pulling failed ❌")
+        elif args.cidre_subcommand == "count":
+            counter = count(args.countries, args.cidr_store)
+            total = 0
+
+            if counter:
+                for country, per_country in counter.items():
+                    print(f"{country}: {per_country}")
+                    total += per_country
+
+                print(f"Total: {total}")
+            else:
+                print("Oh no! Counting failed ❌")
+    elif args.command == "firewall":
+        if args.command in ["allow", "deny", "reject"]:
+            joined_countries = ", ".join(args.countries)
+            print(
+                f"💡 Applying '{args.command}' action to '{args.firewall.value}' firewall for {joined_countries} countries...",
+                end="\n\n",
+            )
+            success = apply(args.firewall, args.command, args.countries, args.cidr_store)
+            print("")
+
+            if success:
+                print("Applying complete ✅")
+            else:
+                print("Oh no! Applying failed ❌")
+
         print("")
-
-        if success:
-            print("Pulling complete ✅")
-        else:
-            print("Oh no! Pulling failed ❌")
-    elif args.command == "count":
-        counter = count(args.countries, args.cidr_store)
-        total = 0
-
-        if counter:
-            for country, per_country in counter.items():
-                print(f"{country}: {per_country}")
-                total += per_country
-
-            print(f"Total: {total}")
-        else:
-            print("Oh no! Counting failed ❌")
-    elif args.command in ["allow", "deny", "reject"]:
-        joined_countries = ", ".join(args.countries)
-        print(
-            f"💡 Applying '{args.command}' action to '{args.firewall.value}' firewall for {joined_countries} countries...",
-            end="\n\n",
-        )
-        success = apply(args.firewall, args.command, args.countries, args.cidr_store)
-        print("")
-
-        if success:
-            print("Applying complete ✅")
-        else:
-            print("Oh no! Applying failed ❌")
-
-    print("")
 
 
 if __name__ == "__main__":
