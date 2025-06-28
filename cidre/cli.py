@@ -100,13 +100,13 @@ def main():
 
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    cidre_parser = subparsers.add_parser("cidr", help="Pulls the CIDRs from RIRs")
+    cidr_parser = subparsers.add_parser("cidr", help="Pulls the CIDRs from RIRs")
     firewall_parser = subparsers.add_parser("firewall", help="Choose from {accept, deny, reject}")
 
-    cidre_subparser = cidre_parser.add_subparsers(dest="cidre_subcommand", required=True)
+    cidr_subcommand = cidr_parser.add_subparsers(dest="cidre_subcommand", required=True)
     firewall_subparser = firewall_parser.add_subparsers(dest="firewall_subcommand", required=True)
 
-    pull_parser = cidre_subparser.add_parser("pull", help="Pulls the CIDRs from RIRs")
+    pull_parser = cidr_subcommand.add_parser("pull", help="Pulls the CIDRs from RIRs")
 
     pull_parser.add_argument(
         "-m",
@@ -129,7 +129,7 @@ def main():
         help="The path to store CIDRs. Default: './output/cidr'.",
     )
 
-    count_parser = cidre_subparser.add_parser("count", help="Counts amount of IPs")
+    count_parser = cidr_subcommand.add_parser("count", help="Counts amount of IPs")
 
     count_parser.add_argument(
         "countries",
