@@ -26,7 +26,7 @@ pip install cidre-cli
 ### **Pull & merge CIDR ranges**
 
 ```bash
-cidre pull --merge
+cidre cidr pull --merge
 ```
 
 - Downloads the latest CIDR allocations from RIRs.
@@ -36,7 +36,7 @@ cidre pull --merge
 
 ```bash
 # UFW is better suited for small CIDR inputs
-cidre deny ir kp --firewall ufw
+cidre firewall deny ir kp --firewall ufw
 ```
 
 - Blocks **Iran (IR), and North Korea (KP)** in UFW.
@@ -45,7 +45,7 @@ cidre deny ir kp --firewall ufw
 
 ```bash
 # iptables is better suited for large CIDR inputs
-cidre deny ru ir kp --firewall iptables
+cidre firewall deny ru ir kp --firewall iptables
 ```
 
 - Blocks **Russia (RU), Iran (IR), and North Korea (KP)** in iptables using ipset.
@@ -80,7 +80,7 @@ pip install .
 Fetches the latest IP allocation data from all RIRs and **compiles per-country CIDR blocks**:
 
 ```bash
-cidre pull --merge
+cidre cidr pull --merge
 ```
 
 - `--merge`: Merges overlapping IP ranges for efficiency.
@@ -92,7 +92,7 @@ cidre pull --merge
 Allow|deny|reject specific countries' CIDR blocks in **specified firewall**:
 
 ```bash
-cidre allow|deny|reject ru ir kp
+cidre firewall allow|deny|reject ru ir kp
 ```
 
 - `--firewall ufw|iptables`: Firewall to apply rules. Default `ufw`.
