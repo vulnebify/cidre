@@ -77,12 +77,11 @@ git clone https://github.com/vulnebify/cidre.git && cd cidre && python3 -m venv 
 | ----------------- | --------------------------------------------------- |
 | `cidre cidr pull` | Fetches the latest IP allocation data from all RIRs |
 
-
-| Flag           | Description                                 | Default                                            |
-| -------------- | ------------------------------------------- | -------------------------------------------------- |
-| `--merge`      | Merges overlapping IP ranges for efficiency | `false`                                            |
-| `--proxy`      | Proxies connection to RIRs                  | *optinal*                                          |
-| `--cidr-store` | Specifies CIDRs' custom storage directory   | `./output/cidr/{ipv4 or ipv6}/{country_code}.cidr` |
+| Flag           | Description                                 | Default                           |
+| -------------- | ------------------------------------------- | --------------------------------- |
+| `--merge`      | Merges overlapping IP ranges for efficiency | `false`                           |
+| `--proxy`      | Proxies connection to RIRs                  | *optinal*                         |
+| `--cidr-store` | Specifies CIDRs' custom storage directory   | e.g. `./output/cidr/ipv4/us.cidr` |
 
 ### `cidr count`
 
@@ -91,9 +90,9 @@ git clone https://github.com/vulnebify/cidre.git && cd cidre && python3 -m venv 
 | `cidre cidr count`       | Counts amount of IPs per country                               |
 | `cidre cidr count US CN` | Counts amount of IPs by country code (ISO 3166-1 alpha-2 code) |
 
-| Flag           | Description                                 | Default                                            |
-| -------------- | ------------------------------------------- | -------------------------------------------------- |
-| `--cidr-store` | Specifies CIDRs' custom storage directory   | `./output/cidr/{ipv4 or ipv6}/{country_code}.cidr` |
+| Flag           | Description                               | Default                           |
+| -------------- | ----------------------------------------- | --------------------------------- |
+| `--cidr-store` | Specifies CIDRs' custom storage directory | e.g. `./output/cidr/ipv4/us.cidr` |
 
 ### `firewall allow|deny|reject`
 
@@ -103,10 +102,10 @@ git clone https://github.com/vulnebify/cidre.git && cd cidre && python3 -m venv 
 | `cidre firewall deny`   | Apply deny rule to specified firewall   |
 | `cidre firewall reject` | Apply reject rule to specified firewall |
 
-| Flag           | Description                                         | Default                                            |
-| -------------- | --------------------------------------------------- | -------------------------------------------------- |
-| `--firewall`   | Firewall to apply rules. Options: `ufw`, `iptables` | `ufw`                                              |
-| `--cidr-store` | Specifies CIDRs' custom storage directory           | `./output/cidr/{ipv4 or ipv6}/{country_code}.cidr` |
+| Flag           | Description                                         | Default                           |
+| -------------- | --------------------------------------------------- | --------------------------------- |
+| `--firewall`   | Firewall to apply rules. Options: `ufw`, `iptables` | `ufw`                             |
+| `--cidr-store` | Specifies CIDRs' custom storage directory           | e.g. `./output/cidr/ipv4/us.cidr` |
 
 **⚠️ NOTE: iptables firewall DO NOT persist rules by default**
 
