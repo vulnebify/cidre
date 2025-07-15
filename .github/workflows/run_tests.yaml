@@ -5,10 +5,14 @@ on:
     branches:
       - main
       - dev
+    paths-ignore:
+      - 'README.md'
   pull_request:
     branches:
       - main
       - dev
+    paths-ignore:
+      - 'README.md'
 
 jobs:
   test:
