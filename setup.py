@@ -7,7 +7,7 @@ setup(
     name="cidre_cli",
     version="2.0.0",
     packages=find_packages(),
-    install_requires=["netaddr==1.3.0", "requests==2.32.3"],
+    install_requires=["netaddr==1.3.0", "requests==2.32.4"],
     entry_points={
         "console_scripts": [
             "cidre=cidre.cli:main",
