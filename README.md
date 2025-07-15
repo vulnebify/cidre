@@ -73,15 +73,12 @@ git clone https://github.com/vulnebify/cidre.git && cd cidre && python3 -m venv 
 
 ### `cidr pull`
 
-| Command           | Description                                         |
-| ----------------- | --------------------------------------------------- |
-| `cidre cidr pull` | Fetches the latest IP allocation data from all RIRs |
-
-| Flag           | Description                                 | Default                           |
-| -------------- | ------------------------------------------- | --------------------------------- |
-| `--merge`      | Merges overlapping IP ranges for efficiency | `false`                           |
-| `--proxy`      | Proxies connection to RIRs                  | *optinal*                         |
-| `--cidr-store` | Specifies CIDRs' custom storage directory   | e.g. `./output/cidr/ipv4/us.cidr` |
+| Command                             | Description                                                         |
+| ----------------------------------- | ------------------------------------------------------------------- |
+| `cidre cidr pull`                   | Fetches the latest IP allocation data from all RIRs                 |
+| `cidre cidr pull --merge`           | Merges overlapping IP ranges for efficiency. Optional.              |
+| `cidre cidr pull --proxy PROXY`     | Proxies connection to RIRs. Optional.                               |
+| `cidre cidr pull --cidr-store PATH` | Specifies CIDRs' custom storage directory. Default: `./output/cidr` |
 
 ### `cidr count`
 
@@ -89,23 +86,17 @@ git clone https://github.com/vulnebify/cidre.git && cd cidre && python3 -m venv 
 | ------------------------ | -------------------------------------------------------------- |
 | `cidre cidr count`       | Counts amount of IPs per country                               |
 | `cidre cidr count US CN` | Counts amount of IPs by country code (ISO 3166-1 alpha-2 code) |
-
-| Flag           | Description                               | Default                           |
-| -------------- | ----------------------------------------- | --------------------------------- |
-| `--cidr-store` | Specifies CIDRs' custom storage directory | e.g. `./output/cidr/ipv4/us.cidr` |
+| `cidre cidr count --cidr-store PATH`       | Counts amount of IPs per country. Default: `./output/cidr`     |
 
 ### `firewall allow|deny|reject`
 
-| Command                 | Description                             |
-| ----------------------- | --------------------------------------- |
-| `cidre firewall allow`  | Apply allow rule to specified firewall  |
-| `cidre firewall deny`   | Apply deny rule to specified firewall   |
-| `cidre firewall reject` | Apply reject rule to specified firewall |
-
-| Flag           | Description                                         | Default                           |
-| -------------- | --------------------------------------------------- | --------------------------------- |
-| `--firewall`   | Firewall to apply rules. Options: `ufw`, `iptables` | `ufw`                             |
-| `--cidr-store` | Specifies CIDRs' custom storage directory           | e.g. `./output/cidr/ipv4/us.cidr` |
+| Command                                   | Description                                                         |
+| ----------------------------------------- | ------------------------------------------------------------------- |
+| `cidre firewall allow`                    | Apply allow rule to specified firewall                              |
+| `cidre firewall deny`                     | Apply deny rule to specified firewall                               |
+| `cidre firewall reject`                   | Apply reject rule to specified firewall                             |
+| `cidre firewall reject --firewall ufw`    | Firewall to apply rules. Options: `ufw`, `iptables`. Default: `ufw` |
+| `cidre firewall reject --cidr-store PATH` | Counts amount of IPs per country. Default: `./output/cidr`          |
 
 **⚠️ NOTE: iptables firewall DO NOT persist rules by default**
 
