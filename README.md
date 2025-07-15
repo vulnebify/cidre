@@ -15,7 +15,7 @@
 
 ---
 
-## ⚡ Quick start
+## Quick start
 
 ### **Install CIDRE**
 
@@ -53,50 +53,60 @@ cidre firewall deny ru ir kp --firewall iptables
 
 ---
 
-## 🛠️ Installation
+## Installation
 
-### **Install via PyPI**
+### Install from PyPI
 
 ```bash
 pip install cidre-cli
 ```
 
-### **Alternative: clone the repository**
+### Intall from GitHub
 
 ```bash
-git clone https://github.com/vulnebify/cidre.git
-cd cidre
-python3 -m venv .venv
-source .venv/bin/activate
-pip install .
+git clone https://github.com/vulnebify/cidre.git && cd cidre && python3 -m venv .venv && source .venv/bin/activate && pip install .
 ```
 
 ---
 
-## ⚡ Usage
+## Commands
 
-### **Pull and compile CIDR ranges**
+### `cidr pull`
 
-Fetches the latest IP allocation data from all RIRs and **compiles per-country CIDR blocks**:
+| Command           | Description                                         |
+| ----------------- | --------------------------------------------------- |
+| `cidre cidr pull` | Fetches the latest IP allocation data from all RIRs |
 
-```bash
-cidre cidr pull --merge
-```
 
-- `--merge`: Merges overlapping IP ranges for efficiency.
-- `--proxy <proxy>`: Proxies connection to RIRs.
-- `--cidr-store <path>`: Specifies CIDRs' custom storage directory. Default `./output/cidr/{ipv4|ipv6}/{country_code}.cidr`.
+| Flag           | Description                                 | Default                                            |
+| -------------- | ------------------------------------------- | -------------------------------------------------- |
+| `--merge`      | Merges overlapping IP ranges for efficiency | `false`                                            |
+| `--proxy`      | Proxies connection to RIRs                  | *optinal*                                          |
+| `--cidr-store` | Specifies CIDRs' custom storage directory   | `./output/cidr/{ipv4 or ipv6}/{country_code}.cidr` |
 
-### **Action on countries**
+### `cidr count`
 
-Allow|deny|reject specific countries' CIDR blocks in **specified firewall**:
+| Command                  | Description                                                    |
+| ------------------------ | -------------------------------------------------------------- |
+| `cidre cidr count`       | Counts amount of IPs per country                               |
+| `cidre cidr count US CN` | Counts amount of IPs by country code (ISO 3166-1 alpha-2 code) |
 
-```bash
-cidre firewall allow|deny|reject ru ir kp
-```
+| Flag           | Description                                 | Default                                            |
+| -------------- | ------------------------------------------- | -------------------------------------------------- |
+| `--cidr-store` | Specifies CIDRs' custom storage directory   | `./output/cidr/{ipv4 or ipv6}/{country_code}.cidr` |
 
-- `--firewall ufw|iptables`: Firewall to apply rules. Default `ufw`.
-- `--cidr-store <path>`: Specifies CIDRs' custom storage directory. Default `./output/cidr/{ipv4|ipv6}/{country_code}.cidr`.
+### `firewall allow|deny|reject`
+
+| Command                 | Description                             |
+| ----------------------- | --------------------------------------- |
+| `cidre firewall allow`  | Apply allow rule to specified firewall  |
+| `cidre firewall deny`   | Apply deny rule to specified firewall   |
+| `cidre firewall reject` | Apply reject rule to specified firewall |
+
+| Flag           | Description                                         | Default                                            |
+| -------------- | --------------------------------------------------- | -------------------------------------------------- |
+| `--firewall`   | Firewall to apply rules. Options: `ufw`, `iptables` | `ufw`                                              |
+| `--cidr-store` | Specifies CIDRs' custom storage directory           | `./output/cidr/{ipv4 or ipv6}/{country_code}.cidr` |
 
 **⚠️ NOTE: iptables firewall DO NOT persist rules by default**
 
@@ -120,28 +130,27 @@ sudo ipset list
 sudo iptables -L -v -n
 ```
 
-
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the **MIT License**.
 
 ---
 
-## 🙌 Inspired by
+## Inspired by
 
 CIDRE was inspired by **[herrbischoff/country-ip-blocks](https://github.com/herrbischoff/country-ip-blocks)** and aims to provide an automated alternative with firewall integration.
 
 ---
 
-## 🤝 Contributions
+## Contributions
 
 PRs are welcome! Feel free to **fork the repo** and submit pull requests.
 
 ---
 
-## 📧 Contact
+## Contact
 
 For any questions, open an issue or reach out via GitHub Discussions.
 
