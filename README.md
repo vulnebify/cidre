@@ -1,17 +1,11 @@
 # CIDRE
 
-**CIDRe** is a CLI tool that fetches **daily updated IP allocations** from **Regional Internet Registries (RIRs)**, compiles them into country-based CIDR files, and allows easy **firewall management**.
+**CIDRe** is a CLI tool that fetches **daily updated IP allocations** from **Regional Internet Registries (RIRs)**, compiles them into country-based CIDR files, and allows easy **firewall management**. Daily automatic CIDR updates **[in the repository](https://github.com/vulnebify/cidre/blob/main/output/cidr).**
 
 [![Compile CIDRs](https://github.com/vulnebify/cidre/actions/workflows/compile_cidrs.yml/badge.svg)](https://github.com/vulnebify/cidre/actions/workflows/compile_cidrs.yml)
 [![Publish Release to PyPI](https://github.com/vulnebify/cidre/actions/workflows/pypi_release.yml/badge.svg)](https://github.com/vulnebify/cidre/actions/workflows/pypi_release.yml)
 
-![demo](https://github.com/user-attachments/assets/ada4e504-90a3-442b-aa05-98a1e0b1da7e)
-
-🔹 **Supports AFRINIC, APNIC, ARIN, LACNIC, RIPE NCC**    
-🔹 Daily automatic CIDR updates **[in the repository](https://github.com/vulnebify/cidre/blob/main/output/cidr)**    
-🔹 **Merges and optimizes CIDR blocks** for efficiency     
-🔹 **Firewall integration** (UFW & iptables /w ipset support)   
-🔹 **IPv4 & IPv6 compatible**     
+[![asciicast](https://asciinema.org/a/727926.svg)](https://asciinema.org/a/727926)
 
 ---
 
