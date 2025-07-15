@@ -86,7 +86,7 @@ git clone https://github.com/vulnebify/cidre.git && cd cidre && python3 -m venv 
 | ------------------------ | -------------------------------------------------------------- |
 | `cidre cidr count`       | Counts amount of IPs per country                               |
 | `cidre cidr count US CN` | Counts amount of IPs by country code (ISO 3166-1 alpha-2 code) |
-| `cidre cidr count --cidr-store PATH`       | Counts amount of IPs per country. Default: `./output/cidr`     |
+| `cidre cidr count --cidr-store PATH`       | Specifies CIDRs' custom storage directory. Default: `./output/cidr`    |
 
 ### `firewall allow|deny|reject`
 
@@ -96,7 +96,7 @@ git clone https://github.com/vulnebify/cidre.git && cd cidre && python3 -m venv 
 | `cidre firewall deny`                     | Apply deny rule to specified firewall                               |
 | `cidre firewall reject`                   | Apply reject rule to specified firewall                             |
 | `cidre firewall reject --firewall ufw`    | Firewall to apply rules. Options: `ufw`, `iptables`. Default: `ufw` |
-| `cidre firewall reject --cidr-store PATH` | Counts amount of IPs per country. Default: `./output/cidr`          |
+| `cidre firewall reject --cidr-store PATH` | Specifies CIDRs' custom storage directory. Default: `./output/cidr`          |
 
 **⚠️ NOTE: iptables firewall DO NOT persist rules by default**
 
