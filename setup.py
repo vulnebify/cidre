@@ -5,8 +5,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="cidre_cli",
-    version="2.0.0",
-    packages=find_packages(),
+    version="2.1.0",
+    packages=find_packages(exclude=["tests", "tests.*"]),
     install_requires=["netaddr==1.3.0", "requests==2.32.4"],
     entry_points={
         "console_scripts": [

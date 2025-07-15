@@ -81,7 +81,7 @@ def apply(firewall: Firewall, action: str, countries: List[str], store: str) -> 
         return False
 
 
-def main():
+def print_title(parser: argparse.ArgumentParser):
     print(
         r"""
   ____  ___  ____   ____   _____ 
@@ -89,22 +89,26 @@ def main():
 | |     | | | | | || |_) ||  _|  
 | |___  | | | |_| ||  _ < | |___ 
  \____||___||____/ |_| \_\|_____|
+ 
+Compile CIDRs from AFRINIC, APNIC, ARIN, LACNIC and RIPENCC. See more: https://github.com/vulnebify/cidre
         """
     )
-    print(
-        "Compile CIDRs from AFRINIC, APNIC, ARIN, LACNIC and RIPENCC. See more: https://github.com/vulnebify/cidre"
-    )
-    print("")
 
+    parser.print_help()
+
+
+def main():
     parser = argparse.ArgumentParser()
 
-    subparsers = parser.add_subparsers(dest="command", required=True)
+    subparsers = parser.add_subparsers(dest="command")
 
     cidr_parser = subparsers.add_parser("cidr", help="Pulls the CIDRs from RIRs")
-    firewall_parser = subparsers.add_parser("firewall", help="Choose from {accept, deny, reject}")
+    firewall_parser = subparsers.add_parser(
+        "firewall", help="Choose from {accept, deny, reject}"
+    )
 
-    cidr_subcommand = cidr_parser.add_subparsers(dest="cidre_subcommand", required=True)
-    firewall_subparser = firewall_parser.add_subparsers(dest="firewall_subcommand", required=True)
+    cidr_subcommand = cidr_parser.add_subparsers(dest="cidre_subcommand")
+    firewall_subparser = firewall_parser.add_subparsers(dest="firewall_subcommand")
 
     pull_parser = cidr_subcommand.add_parser("pull", help="Pulls the CIDRs from RIRs")
 
@@ -208,6 +212,8 @@ def main():
                 print(f"Total: {total}")
             else:
                 print("Oh no! Counting failed ❌")
+        else:
+            print_title(cidr_parser)
     elif args.command == "firewall":
         if args.command in ["allow", "deny", "reject"]:
             joined_countries = ", ".join(args.countries)
@@ -215,7 +221,9 @@ def main():
                 f"💡 Applying '{args.command}' action to '{args.firewall.value}' firewall for {joined_countries} countries...",
                 end="\n\n",
             )
-            success = apply(args.firewall, args.command, args.countries, args.cidr_store)
+            success = apply(
+                args.firewall, args.command, args.countries, args.cidr_store
+            )
             print("")
 
             if success:
@@ -223,7 +231,11 @@ def main():
             else:
                 print("Oh no! Applying failed ❌")
 
-        print("")
+            print("")
+        else:
+            print_title(firewall_parser)
+    else:
+        print_title(parser)
 
 
 if __name__ == "__main__":
