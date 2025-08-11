@@ -3,7 +3,7 @@
 import argparse
 import logging
 
-from . import (
+from cidre import (
     rir_fetcher,
     cidr_store,
     countries,

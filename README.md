@@ -55,7 +55,15 @@ cidre firewall deny ru ir kp --firewall iptables
 pip install cidre-cli
 ```
 
-### From GitHub
+### From Release
+
+Download the latest precompiled binary from the [Releases](https://github.com/vulnebify/cidre/releases) page:
+
+```bash
+chmod +x cidre && ./cidre
+```
+
+### From Sources
 
 ```bash
 git clone https://github.com/vulnebify/cidre.git && cd cidre && python3 -m venv .venv && source .venv/bin/activate && pip install .
