@@ -215,14 +215,14 @@ def main():
         else:
             print_title(cidr_parser)
     elif args.command == "firewall":
-        if args.command in ["allow", "deny", "reject"]:
+        if args.firewall_subcommand in ["allow", "deny", "reject"]:
             joined_countries = ", ".join(args.countries)
             print(
-                f"💡 Applying '{args.command}' action to '{args.firewall.value}' firewall for {joined_countries} countries...",
+                f"💡 Applying '{args.firewall_subcommand}' action to '{args.firewall.value}' firewall for {joined_countries} countries...",
                 end="\n\n",
             )
             success = apply(
-                args.firewall, args.command, args.countries, args.cidr_store
+                args.firewall, args.firewall_subcommand, args.countries, args.cidr_store
             )
             print("")
 

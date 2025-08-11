@@ -47,3 +47,23 @@ def test_cidr_count():
     assert result.returncode == 0
     assert "US: " in result.stdout
     assert "RU: " in result.stdout
+
+
+def test_firewall_reject():
+    result = subprocess.run(
+        ["cidre", "cidr", "pull", "--merge"],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0
+
+    result = subprocess.run(
+        ["cidre", "firewall", "reject", "ru"],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0
+    assert (
+        "💡 Applying 'reject' action to 'ufw' firewall for RU countries"
+        in result.stdout
+    )
